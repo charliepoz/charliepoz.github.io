@@ -5,16 +5,53 @@ body, html {
     background: #f4f4f4; /* A subtle off-white background */
     color: #333;
     line-height: 1.6; /* Improve readability */
+    overflow: hidden; /* Prevent scrolling on the entire body */
 }
 
-.container {
-    width: 80%;
-    margin: auto;
-    max-width: 1200px;
-    background: #fff; /* A white container to contrast subtly with the background */
-    padding: 20px; /* Add padding to prevent content from touching the edges */
-    box-shadow: 0 0 10px rgba(0,0,0,0.05); /* Soft shadow for a subtle depth */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 20%; /* Adjust width as necessary */
+    background: #333; /* Dark background for the sidebar */
+    color: white;
+    overflow-y: auto; /* Enable scrolling on the sidebar */
 }
+
+.main-content {
+    position: absolute;
+    left: 20%; /* Adjust to the width of the sidebar */
+    top: 0;
+    bottom: 0;
+    right: 0;
+    overflow-y: auto; /* Enable scrolling on the main content */
+    padding: 20px;
+    background: #fff;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav li a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: white;
+    border-bottom: 1px solid #444;
+}
+
+nav li a:hover {
+    background: #555;
+}
+
+nav li a:active, nav li a:focus {
+    background: #777;
+}
+
 
 header {
     text-align: center;
