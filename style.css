@@ -1,3 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.intro-block {
+    text-align: center;
+    width: 100%;
+    padding: 50px 0; /* Adjust the padding to control the block height */
+    background: #fff; /* Or any color you prefer */
+    border-bottom: 1px solid #eaeaea; /* Optional border for a subtle separation */
+}
+
+.intro-block h1 {
+    font-size: 3em; /* Large, bold font for the main title */
+    margin-bottom: 0.5em; /* Spacing between title and description */
+    font-weight: bold; /* Ensures the text is bold */
+    color: #333; /* Dark color for the title */
+}
+
+.intro-block p {
+    font-size: 1.5em; /* Smaller font for the description */
+    color: #666; /* Lighter color for the description */
+    line-height: 1.4; /* Adjust line spacing for better readability */
+    margin: 0 auto; /* Centers the text if needed */
+    max-width: 600px; /* Max width of the text block */
+}
+
 body, html {
     margin: 0;
     padding: 0;
@@ -13,11 +38,39 @@ body, html {
     left: 0;
     top: 0;
     bottom: 0;
-    width: 20%; /* Adjust width as necessary */
-    background: #333; /* Dark background for the sidebar */
-    color: white;
+    background: #2C3E50; /* A refined shade of grey */
+    color: #ECF0F1; /* A soft, complementary color for the text */
+    font-family: 'Roboto', sans-serif; /* A sleek, modern font */
+    font-size: 0.85em; /* Smaller font size for an elegant appearance */
+    line-height: 1.5; /* Line height for better readability */
     overflow-y: auto; /* Enable scrolling on the sidebar */
+    padding: 20px; /* Padding for aesthetic spacing */
+    box-shadow: 3px 0px 10px rgba(0,0,0,0.2); /* Subtle shadow for depth */
 }
+
+
+.sidebar nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar nav ul li a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #ECF0F1; /* Ensuring text color is legible against the sidebar background */
+    border-bottom: 1px solid #34495E; /* A slightly darker border for a subtle separator */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.sidebar nav ul li a:hover,
+.sidebar nav ul li a.active {
+    background: #34495E; /* A slightly lighter shade for hover and active states */
+    color: #FFFFFF; /* White text for better contrast on active/hover states */
+    text-transform: uppercase; /* Optional stylistic choice */
+}
+
 
 .main-content {
     position: absolute;
