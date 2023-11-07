@@ -134,3 +134,26 @@ nav li a.active {
     background: #555;
     color: #fff;
 }
+
+.intro-block {
+    text-align: center;
+    width: 100%;
+    padding: 50px 0; /* Adjust the padding to control the block height */
+    background: #fff; /* Or any color you prefer */
+    border-bottom: 1px solid #eaeaea; /* Optional border for a subtle separation */
+}
+
+.intro-block h1 {
+    font-size: 3em; /* Large, bold font for the main title */
+    margin-bottom: 0.5em; /* Spacing between title and description */
+    font-weight: bold; /* Ensures the text is bold */
+    color: #333; /* Dark color for the title */
+}
+
+.intro-block p {
+    font-size: 1.5em; /* Smaller font for the description */
+    color: #666; /* Lighter color for the description */
+    line-height: 1.4; /* Adjust line spacing for better readability */
+    margin: 0 auto; /* Centers the text if needed */
+    max-width: 600px; /* Max width of the text block */
+}
