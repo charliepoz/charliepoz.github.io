@@ -1,51 +1,87 @@
 body, html {
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
-    background: #fff;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* A more refined font */
+    background: #f4f4f4; /* A subtle off-white background */
     color: #333;
+    line-height: 1.6; /* Improve readability */
 }
 
 .container {
     width: 80%;
     margin: auto;
     max-width: 1200px;
+    background: #fff; /* A white container to contrast subtly with the background */
+    padding: 20px; /* Add padding to prevent content from touching the edges */
+    box-shadow: 0 0 10px rgba(0,0,0,0.05); /* Soft shadow for a subtle depth */
 }
 
 header {
     text-align: center;
-    padding: 50px 0;
+    padding: 40px 0;
 }
 
 header h1 {
     margin: 0;
-    font-size: 3em;
+    font-size: 2.5em; /* Slightly smaller for elegance */
+    color: #222; /* A deeper shade for the title */
+    font-weight: normal; /* Less bold for a lighter header */
 }
 
 header p {
-    font-size: 1.2em;
+    font-size: 1em; /* Standardize font size */
+    color: #666; /* Lighter text for the subtitle/email */
 }
 
 .social-links a {
     text-decoration: none;
     color: #0077b5; /* LinkedIn blue */
     margin-right: 20px;
+    font-weight: bold; /* To make social links stand out */
 }
 
 main h2 {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-    margin-top: 30px;
+    border-bottom: 2px solid #eee; /* Make the border slightly thicker for definition */
+    padding-bottom: 10px; /* More padding for visual space */
+    margin-top: 40px; /* Increase spacing from the previous content */
+    font-size: 1.5em; /* Larger for clear section headers */
+    color: #222; /* Use a consistent color for headers */
 }
 
-section {
-    margin-bottom: 20px;
+.experience-block, .education-block {
+    margin-bottom: 30px; /* Increase bottom margin for clear separation */
+    padding-bottom: 15px; /* Add padding for spacing within blocks */
+    border-bottom: 1px solid #eee; /* Subtle separation between blocks */
+}
+
+section h3 {
+    font-size: 1.3em; /* Distinct size for sub-headers */
+    margin-bottom: 10px; /* Spacing under sub-headers */
+}
+
+section p, section ul {
+    margin-left: 20px; /* Indent content for hierarchy */
+    font-size: 0.9em; /* Subtly smaller font size for content text */
+}
+
+section ul {
+    list-style-type: none; /* Remove list bullets for a cleaner look */
+    padding-left: 0; /* Align with the rest of the content */
+}
+
+section li:before {
+    content: "•"; /* Add custom bullets */
+    color: #0077b5; /* Use LinkedIn blue for a splash of color */
+    font-weight: bold; /* Make the bullets stand out */
+    display: inline-block; /* Necessary for alignment */
+    width: 1em; /* Space out from text */
+    margin-left: -1em; /* Align with the rest of the content */
 }
 
 footer {
     text-align: center;
     padding: 20px 0;
-    background: #f8f8f8;
+    background: #e8e8e8; /* Slightly darker footer for contrast */
     position: relative;
     bottom: 0;
     width: 100%;
@@ -53,4 +89,6 @@ footer {
 
 footer p {
     margin: 0;
+    color: #666; /* Lighter text in the footer */
+    font-size: 0.8em; /* Smaller font size for footer content */
 }
