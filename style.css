@@ -44,7 +44,7 @@ body, html {
     font-size: 0.85em; /* Smaller font size for an elegant appearance */
     line-height: 1.5; /* Line height for better readability */
     overflow-y: auto; /* Enable scrolling on the sidebar */
-    padding: 20px; /* Padding for aesthetic spacing */
+    padding: 30px; /* Padding for aesthetic spacing */
     box-shadow: 3px 0px 10px rgba(0,0,0,0.2); /* Subtle shadow for depth */
 }
 
@@ -68,7 +68,7 @@ body, html {
 .sidebar nav ul li a.active {
     background: #34495E; /* A slightly lighter shade for hover and active states */
     color: #FFFFFF; /* White text for better contrast on active/hover states */
-    text-transform: uppercase; /* Optional stylistic choice */
+    font-weight: bold; /* Make the text bold on hover */
 }
 
 
@@ -113,9 +113,9 @@ header {
 
 header h1 {
     margin: 0;
-    font-size: 2.5em; /* Slightly smaller for elegance */
+    font-size: 3em; /* Slightly smaller for elegance */
     color: #222; /* A deeper shade for the title */
-    font-weight: normal; /* Less bold for a lighter header */
+    font-weight: bold; /* Less bold for a lighter header */
 }
 
 header p {
