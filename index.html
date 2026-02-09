@@ -1,131 +1,891 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <title>Charlie Pozniak | Curriculum Vitae</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charlie — Research, Strategy, Technology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=JetBrains+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+
+<!-- Prevent flash: apply saved theme before paint -->
+<script>
+  (function() {
+    var saved = localStorage.getItem('theme');
+    var sys = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', saved || sys);
+  })();
+</script>
+
+<style>
+  /* ——— THEME TOKENS ——— */
+  :root {
+    --serif: 'Cormorant Garamond', 'Georgia', serif;
+    --sans: 'DM Sans', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', 'SF Mono', monospace;
+    --speed: 0.5s;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0a0a0a;
+    --bg-elevated: rgba(10, 10, 10, 0.85);
+    --fg: #e8e4df;
+    --fg-muted: #8a8580;
+    --fg-subtle: #5a5550;
+    --accent: #c4b5a0;
+    --accent-dim: #3a3530;
+    --border: #1e1c1a;
+    --card-hover: rgba(196, 181, 160, 0.02);
+    --glow: rgba(196, 181, 160, 0.03);
+  }
+
+  [data-theme="light"] {
+    --bg: #f5f2ed;
+    --bg-elevated: rgba(245, 242, 237, 0.88);
+    --fg: #1a1816;
+    --fg-muted: #5c5750;
+    --fg-subtle: #9a948c;
+    --accent: #7a6b58;
+    --accent-dim: #d5cec4;
+    --border: #ddd8d0;
+    --card-hover: rgba(122, 107, 88, 0.04);
+    --glow: rgba(122, 107, 88, 0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    transition: background var(--speed) ease, color var(--speed) ease;
+  }
+
+  /* ——— NAV ——— */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.25rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-elevated);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: background var(--speed) ease, border-color var(--speed) ease;
+  }
+
+  nav .logo {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    text-decoration: none;
+    transition: color var(--speed) ease;
+  }
+
+  nav .logo span {
+    color: var(--fg-muted);
+    font-weight: 300;
+    transition: color var(--speed) ease;
+  }
+
+  nav .nav-right {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  nav .links {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  nav .links a {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    position: relative;
+  }
+
+  nav .links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+
+  nav .links a:hover { color: var(--fg); }
+  nav .links a:hover::after { width: 100%; }
+
+  /* ——— THEME TOGGLE ——— */
+  .theme-toggle {
+    appearance: none;
+    background: none;
+    border: 1px solid var(--border);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg-muted);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--accent);
+    color: var(--fg);
+  }
+
+  .theme-toggle .icon-sun,
+  .theme-toggle .icon-moon {
+    position: absolute;
+    font-size: 0.8rem;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    line-height: 1;
+  }
+
+  [data-theme="dark"] .icon-moon { transform: translateY(0) rotate(0deg); opacity: 1; }
+  [data-theme="dark"] .icon-sun  { transform: translateY(14px) rotate(90deg); opacity: 0; }
+  [data-theme="light"] .icon-sun  { transform: translateY(0) rotate(0deg); opacity: 1; }
+  [data-theme="light"] .icon-moon { transform: translateY(-14px) rotate(-90deg); opacity: 0; }
+
+  /* ——— HERO ——— */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 3rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 15%; right: -10%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+    transition: color var(--speed) ease;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: var(--fg);
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+    transition: color var(--speed) ease;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+    transition: color var(--speed) ease;
+  }
+
+  .hero-description {
+    font-family: var(--sans);
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--fg-muted);
+    max-width: 580px;
+    margin-top: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+    transition: color var(--speed) ease;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 3rem;
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+    transition: border-color var(--speed) ease;
+  }
+
+  .hero-meta .meta-item { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .hero-meta .meta-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    transition: color var(--speed) ease;
+  }
+
+  .hero-meta .meta-value {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--fg-muted);
+    font-weight: 400;
+    transition: color var(--speed) ease;
+  }
+
+  .hero-meta .meta-value a {
+    color: var(--fg-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-dim);
+    transition: all 0.3s ease;
+  }
+
+  .hero-meta .meta-value a:hover {
+    color: var(--fg);
+    border-color: var(--accent);
+  }
+
+  /* ——— SECTIONS ——— */
+  section { padding: 6rem 3rem; max-width: 1200px; margin: 0 auto; }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 3rem;
+    transition: color var(--speed) ease;
+  }
+
+  .section-label::before {
+    content: '▨';
+    color: var(--accent-dim);
+    transition: color var(--speed) ease;
+  }
+
+  .section-divider { max-width: 1200px; margin: 0 auto; padding: 0 3rem; }
+
+  .section-divider hr {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    transition: background var(--speed) ease;
+  }
+
+  /* ——— WRITING ——— */
+  .writing-grid { display: flex; flex-direction: column; gap: 0; }
+
+  .writing-item {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: 2.5rem;
+    align-items: baseline;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .writing-item:first-child { border-top: 1px solid var(--border); }
+
+  .writing-item:hover {
+    padding-left: 1rem;
+    background: var(--card-hover);
+  }
+
+  .writing-item:hover .writing-title { color: var(--fg); }
+
+  .writing-item:hover .writing-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .writing-date {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--fg-subtle);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    transition: color var(--speed) ease;
+  }
+
+  .writing-content { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .writing-title {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--fg-muted);
+    line-height: 1.35;
+    transition: color 0.3s ease;
+  }
+
+  .writing-venue {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--fg-subtle);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color var(--speed) ease;
+  }
+
+  .writing-arrow {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.3s ease;
+  }
+
+  /* ——— WORK ——— */
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .work-card {
+    border: 1px solid var(--border);
+    padding: 2.25rem;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .work-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--accent-dim);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease, background 0.4s ease;
+  }
+
+  .work-card:hover::before {
+    transform: scaleX(1);
+    background: var(--accent);
+  }
+
+  .work-card:hover {
+    border-color: var(--accent-dim);
+    background: var(--card-hover);
+  }
+
+  .work-card-tag {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--accent-dim);
+    transition: all var(--speed) ease;
+  }
+
+  .work-card h3 {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--fg);
+    margin-bottom: 0.75rem;
+    line-height: 1.25;
+    transition: color var(--speed) ease;
+  }
+
+  .work-card p {
+    font-size: 0.88rem;
+    color: var(--fg-muted);
+    line-height: 1.7;
+    font-weight: 300;
+    transition: color var(--speed) ease;
+  }
+
+  .work-card .work-role {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--fg-subtle);
+    letter-spacing: 0.05em;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    transition: all var(--speed) ease;
+  }
+
+  /* ——— TEACHING ——— */
+  .teaching-list { display: flex; flex-direction: column; gap: 2rem; }
+
+  .teaching-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    transition: border-color var(--speed) ease;
+  }
+
+  .teaching-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .teaching-meta { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .teaching-term {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--fg-subtle);
+    letter-spacing: 0.05em;
+    transition: color var(--speed) ease;
+  }
+
+  .teaching-inst {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    color: var(--fg-muted);
+    font-weight: 400;
+    transition: color var(--speed) ease;
+  }
+
+  .teaching-body h4 {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--fg);
+    margin-bottom: 0.5rem;
+    transition: color var(--speed) ease;
+  }
+
+  .teaching-body p {
+    font-size: 0.88rem;
+    color: var(--fg-muted);
+    line-height: 1.7;
+    font-weight: 300;
+    transition: color var(--speed) ease;
+  }
+
+  /* ——— ABOUT ——— */
+  .about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+
+  .about-text { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .about-text p {
+    font-size: 0.95rem;
+    color: var(--fg-muted);
+    line-height: 1.8;
+    font-weight: 300;
+    transition: color var(--speed) ease;
+  }
+
+  .about-text p:first-child {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--fg);
+    line-height: 1.6;
+  }
+
+  .about-details { display: flex; flex-direction: column; gap: 2rem; padding-top: 0.5rem; }
+
+  .detail-group { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .detail-group-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    transition: color var(--speed) ease;
+  }
+
+  .detail-group-items { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .detail-group-items span {
+    font-size: 0.88rem;
+    color: var(--fg-muted);
+    font-weight: 300;
+    transition: color var(--speed) ease;
+  }
+
+  .detail-group-items a {
+    color: var(--fg-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-dim);
+    transition: all 0.3s ease;
+  }
+
+  .detail-group-items a:hover {
+    color: var(--fg);
+    border-color: var(--accent);
+  }
+
+  /* ——— FOOTER ——— */
+  footer {
+    padding: 4rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    transition: border-color var(--speed) ease;
+  }
+
+  .footer-left { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .footer-name {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--fg);
+    transition: color var(--speed) ease;
+  }
+
+  .footer-copy {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--fg-subtle);
+    letter-spacing: 0.05em;
+    transition: color var(--speed) ease;
+  }
+
+  .footer-links { display: flex; gap: 2rem; }
+
+  .footer-links a {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .footer-links a:hover { color: var(--fg); }
+
+  /* ——— ANIMATIONS ——— */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ——— RESPONSIVE ——— */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav .nav-right { gap: 1.5rem; }
+    nav .links { gap: 1.5rem; }
+    nav .links a { font-size: 0.6rem; }
+
+    .hero { padding: 7rem 1.5rem 3rem; }
+    .hero h1 { font-size: clamp(2.2rem, 8vw, 3.5rem); }
+    .hero-meta { flex-direction: column; gap: 1.5rem; }
+
+    section { padding: 4rem 1.5rem; }
+    .section-divider { padding: 0 1.5rem; }
+
+    .writing-item { grid-template-columns: 1fr; gap: 0.3rem; }
+    .writing-arrow { display: none; }
+
+    .work-grid { grid-template-columns: 1fr; }
+
+    .teaching-item { grid-template-columns: 1fr; gap: 0.75rem; }
+
+    .about-content { grid-template-columns: 1fr; gap: 2.5rem; }
+
+    footer {
+      flex-direction: column;
+      gap: 2rem;
+      align-items: start;
+      padding: 3rem 1.5rem;
+    }
+  }
+</style>
 </head>
 <body>
-    <div class="sidebar">
-        <nav>
-            <ul>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#honors">Awards</a></li>
-                <li><a href="#interests">Interests</a></li>
-            </ul>
-        </nav>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Charlie<span> .</span></a>
+  <div class="nav-right">
+    <div class="links">
+      <a href="#writing">Writing</a>
+      <a href="#work">Work</a>
+      <a href="#teaching">Teaching</a>
+      <a href="#about">About</a>
     </div>
-    <div class="main-content">
-        <header>
-            <h1>Charlie Pozniak</h1>
-            <p>Harvard | World Bank | Oxford </p>
-            <img src="https://media.licdn.com/dms/image/C4D03AQEYNqt0donqrw/profile-displayphoto-shrink_200_200/0/1610541183879?e=2147483647&v=beta&t=fJ-eVKWjAol8NVuBcQKuzMhi-mAQIuNgwF5JEA1FqfA" alt="Charlie Pozniak" width="200" height="200">  
-            <p>I am an graduate student at the Harvard Kennedy School and a consultant at the World Bank. I am fascinated by the intersection between decision science, game theory, and behavioral economics, particularly concerning digital goods. My work has focused on ways to develop and apply emerging technology in development contexts and understanding the complex systems at the heart of our societies.</p>
-            <p><a href="mailto:cpozniak@hks.harvard.edu">cpozniak [at] hks.harvard.edu</a></p>
-            <p><a href="mailto:cpozniak@worldbank.org">cpozniak [at] worldbank.org</a></p>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="icon-sun">☀</span>
+      <span class="icon-moon">☽</span>
+    </button>
+  </div>
+</nav>
 
-            <!-- Social Links -->
-            <div class="social-links">
-                <a href="https://www.linkedin.com/in/charliepozniak" target="_blank">LinkedIn</a>
-                <a href="https://github.com/charliepoz" target="_blank">GitHub</a>
-                <a href="https://www.twitter.com/charliepoz" target="_blank">Twitter</a>
-            </div>
-        </header>
-        <main>
-            <!-- Education Section -->
-            <section id="education">
-                <h2>Education</h2>
-                
-                <div class="education-block">
-                    <h3>Harvard University, John F. Kennedy School of Government</h3>
-                    <p>Master in Public Policy (STEM Pathway) | John F. Kennedy Fellowship</p>
-                    <p>Expected May 2025</p>
-                    <ul>
-                        <li>Contributer: Atlas of AI, Harvard Kennedy School, 2023</li>
-                        <li>Teaching Fellow: Decision Analysis (API-302), Harvard Kennedy School, 2023</li>
-                        <li>Project Manager: Berkman Klein Center for Internet & Society, 2024</li>
-                        <li>
-                    </ul>
-                </div>
-        
-                <div class="education-block">
-                    <h3>Oxford University</h3>
-                    <p>BA History | Oxford Vincent’s Scholar 2018, 2019, 2020</p>
-                    <p>2017-2020</p>
-                    <ul>
-                    </ul>
-                </div>
-                <!-- Additional courses and certifications -->
-                <div class="education-block">
-                    <h3>Continuing Education & Certifications</h3>
-                    <ul>
-                        <li>World Bank | Designing and Running Randomized Evaluations, March 2023</li>
-                        <li>World Bank | Trust Fund Accreditation, June 2022</li>
-                        <li>IBM | Python for Data Science, October 2021</li>
-                        <li>GSMA | Big Data Analytics and Artificial Intelligence for Impact, February 2021</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Experience Section -->
-            <section id="experience">
-                <h2>Experience</h2>
-            
-                <div class="experience-block">
-                    <h3>The World Bank</h3>
-                    <p>Consultant – Poverty and Equity & Social Protection Global Practices</p>
-                    <p>Nov 2020–Present</p>
-                </div>
-            
-                <div class="experience-block">
-                    <h3>Professional Athlete (Rugby Union)</h3>
-                    <p>Sale Sharks, Leicester Tigers, Jersey Reds</p>
-                    <p>January 2018 – January 2021</p>
-                </div>
-            
-            </section>
-
-            <!-- Skills Section -->
-            <section id="skills">
-                <h2>Skills & Interests</h2>
-                <h3>Coding</h3>
-                <p>I enjoy building tools to solve problems. I've built a wide range of software/web tools, as well as interesting hardware side-projects.</p>
-                <p>My current coding skills are:</p>
-                <ul>
-                    <li>Python: Intermediate (Pandas, Numpy, Matplotlib, Streamlit, Scikit-learn, TensorFlow, PyTorch) </li>
-                    <li>R: Intermediate (Tidyverse, Shiny, ggplot2)</li>
-                    <li>HTML/CSS: Intermediate</li>
-                    <li>JavaScript: Beginner</li>
-                    <li>LaTeX/Markdown 
-            </section>
-
-            <!-- Honors Section -->
-            <section id="honors">
-                <h2>Honors & Awards</h2>
-                <ul>
-                    <li>2023-25: Harvard John F. Kennedy Fellowship</li>
-                    <li>2018-20: Oxford University Vincent's Scholar</li>
-                </ul>
-            </section>
-        </main>
-
-            <!-- Interests Section -->
-            <section id="interests">
-                <h2>Interests</h2>
-            
-                <div class="interests-block">
-                    <h4>Academic</h4>
-                    <p>I'm fascinated by risk and uncertainty, and am a teaching fellow for a course on decision analysis (API-302). I am also interested in complex systems and exploring AI/ML development tools in a range of contexts. </p>
-
-                    <h3>Personal</h3>
-                    <p>I love swimming and running on a regular basis, while trying to get better at squash and tennis. I recently rowed for the Harvard graduate crew in the Head of the Charles regatta. I also enjoy reading, cooking, and playing the piano.</p>
-
-        <footer>
-            <p>&copy; 2023 Charlie Pozniak. All rights reserved.</p>
-        </footer>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Research Fellow · Harvard Kennedy School</div>
+  <h1>Decisions under <em>uncertainty</em>, institutions under&nbsp;pressure.</h1>
+  <p class="hero-description">
+    I study how people, algorithms, and institutions make consequential decisions — and how they fail. My work sits at the intersection of AI, game theory, and policy, with a focus on negotiation, conflict, and strategic governance.
+  </p>
+  <div class="hero-meta">
+    <div class="meta-item">
+      <span class="meta-label">Affiliation</span>
+      <span class="meta-value">Belfer Center for Science<br>& International Affairs</span>
     </div>
-    <script src="scroll-navigation.js"></script>
+    <div class="meta-item">
+      <span class="meta-label">Project</span>
+      <span class="meta-value"><a href="#">Move37</a> — AI for Negotiations</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Contact</span>
+      <span class="meta-value"><a href="mailto:charlie@hks.harvard.edu">charlie@hks.harvard.edu</a></span>
+    </div>
+  </div>
+</div>
+
+<!-- WRITING -->
+<div class="section-divider"><hr></div>
+<section id="writing">
+  <div class="section-label reveal">Writing</div>
+  <div class="writing-grid">
+    <a class="writing-item reveal" href="#">
+      <span class="writing-date">2026</span>
+      <div class="writing-content">
+        <span class="writing-title">The Rogues, the Reckless, and the Reasonable: A Taxonomy for AI Risk Governance</span>
+        <span class="writing-venue">Working Paper · Belfer Center</span>
+      </div>
+      <span class="writing-arrow">↗</span>
+    </a>
+    <a class="writing-item reveal" href="#">
+      <span class="writing-date">2025</span>
+      <div class="writing-content">
+        <span class="writing-title">Often Late: Why Policy Delays Are Structural, Not Accidental</span>
+        <span class="writing-venue">Under Review</span>
+      </div>
+      <span class="writing-arrow">↗</span>
+    </a>
+    <a class="writing-item reveal" href="#">
+      <span class="writing-date">2025</span>
+      <div class="writing-content">
+        <span class="writing-title">Decision Coherence in Large Language Models: A POMDP Framework</span>
+        <span class="writing-venue">Working Paper</span>
+      </div>
+      <span class="writing-arrow">↗</span>
+    </a>
+    <a class="writing-item reveal" href="#">
+      <span class="writing-date">2025</span>
+      <div class="writing-content">
+        <span class="writing-title">AI-Assisted Strategic Negotiation: From Context Graphs to Bargaining Theory</span>
+        <span class="writing-venue">Move37 Research</span>
+      </div>
+      <span class="writing-arrow">↗</span>
+    </a>
+    <a class="writing-item reveal" href="#">
+      <span class="writing-date">2024</span>
+      <div class="writing-content">
+        <span class="writing-title">Cultural Evolution, Innovation Economics, and the Diffusion of Ideas</span>
+        <span class="writing-venue">HKS Master's Thesis</span>
+      </div>
+      <span class="writing-arrow">↗</span>
+    </a>
+  </div>
+</section>
+
+<!-- WORK -->
+<div class="section-divider"><hr></div>
+<section id="work">
+  <div class="section-label reveal">Work</div>
+  <div class="work-grid">
+    <div class="work-card reveal">
+      <span class="work-card-tag">Research</span>
+      <h3>Move37</h3>
+      <p>A hybrid research, policy, and technology project developing AI systems for negotiations, diplomacy, and conflict management. Grounded in game theory and bargaining theory rather than enterprise context graphs.</p>
+      <div class="work-role">Founder & Principal Investigator · Belfer Center, Harvard Kennedy School</div>
+    </div>
+    <div class="work-card reveal">
+      <span class="work-card-tag">Advisory</span>
+      <h3>Strategic Consulting</h3>
+      <p>Decision analysis and strategy for institutional investors and technology firms. Current engagements span venture capital, quantitative finance, and healthcare technology.</p>
+      <div class="work-role">Independent Advisor · Three Active Mandates</div>
+    </div>
+    <div class="work-card reveal">
+      <span class="work-card-tag">Technology</span>
+      <h3>Decision Systems</h3>
+      <p>Building tools at the intersection of behavioral economics, evolutionary dynamics, and computer science. Focused on how agents — human and artificial — process uncertainty and reach coherent decisions.</p>
+      <div class="work-role">Technical Research & Prototyping</div>
+    </div>
+  </div>
+</section>
+
+<!-- TEACHING -->
+<div class="section-divider"><hr></div>
+<section id="teaching">
+  <div class="section-label reveal">Teaching</div>
+  <div class="teaching-list">
+    <div class="teaching-item reveal">
+      <div class="teaching-meta">
+        <span class="teaching-term">Spring 2026</span>
+        <span class="teaching-inst">Harvard Kennedy School</span>
+      </div>
+      <div class="teaching-body">
+        <h4>AI & Strategic Decision-Making</h4>
+        <p>A seminar examining how artificial intelligence transforms institutional decision-making in high-stakes environments. Topics include algorithmic negotiation, human–AI teaming in diplomacy, and the governance of autonomous systems.</p>
+      </div>
+    </div>
+    <div class="teaching-item reveal">
+      <div class="teaching-meta">
+        <span class="teaching-term">Fall 2025</span>
+        <span class="teaching-inst">Belfer Center</span>
+      </div>
+      <div class="teaching-body">
+        <h4>Technology & International Security</h4>
+        <p>Workshop series on emerging technology policy, covering AI governance frameworks, dual-use technology dilemmas, and the political economy of compute.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<div class="section-divider"><hr></div>
+<section id="about">
+  <div class="section-label reveal">About</div>
+  <div class="about-content reveal">
+    <div class="about-text">
+      <p>I study the mechanics of consequential choice — how individuals, algorithms, and institutions decide under uncertainty, and what happens when those systems fail.</p>
+      <p>My work draws on game theory, behavioral economics, complexity science, and computer science. I'm a Research Fellow at Harvard's Belfer Center, where I run Move37, a project developing AI tools for negotiation and conflict management. I also advise institutional investors and technology companies on strategy and decision architecture.</p>
+      <p>Before this, I completed my master's at Harvard Kennedy School, where my thesis examined AI inference optimization. I hold a background in professional athletics, which informs how I think about performance, preparation, and executing under pressure.</p>
+    </div>
+    <div class="about-details">
+      <div class="detail-group">
+        <span class="detail-group-label">Education</span>
+        <div class="detail-group-items">
+          <span>MPP, Harvard Kennedy School</span>
+        </div>
+      </div>
+      <div class="detail-group">
+        <span class="detail-group-label">Research Interests</span>
+        <div class="detail-group-items">
+          <span>AI Governance & Safety</span>
+          <span>Strategic Negotiation</span>
+          <span>Decision Theory (POMDPs, MDPs)</span>
+          <span>Cultural Evolution</span>
+          <span>Behavioral Economics</span>
+        </div>
+      </div>
+      <div class="detail-group">
+        <span class="detail-group-label">Elsewhere</span>
+        <div class="detail-group-items">
+          <span><a href="#">Google Scholar</a></span>
+          <span><a href="#">X / Twitter</a></span>
+          <span><a href="#">LinkedIn</a></span>
+          <span><a href="#">GitHub</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <span class="footer-name">Charlie</span>
+    <span class="footer-copy">© 2026 · Cambridge, Massachusetts</span>
+  </div>
+  <div class="footer-links">
+    <a href="mailto:charlie@hks.harvard.edu">Email</a>
+    <a href="#">Scholar</a>
+    <a href="#">Twitter</a>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Theme toggle
+  const toggle = document.getElementById('themeToggle');
+  const html = document.documentElement;
+
+  toggle.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+
+  // System theme change listener (only if no manual override)
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      html.setAttribute('data-theme', e.matches ? 'light' : 'dark');
+    }
+  });
+</script>
+
 </body>
 </html>
