@@ -1,893 +1,847 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Charlie Pozniak — Research, Strategy, Technology</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=JetBrains+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<title>Charlie Pozniak</title>
+<meta name="description" content="Charlie Pozniak — research and strategy on decision-making under uncertainty.">
 
-<!-- Prevent flash: apply saved theme before paint -->
-<script>
-  (function() {
-    var saved = localStorage.getItem('theme');
-    var sys = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', saved || sys);
-  })();
-</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
 
 <style>
-  /* ——— THEME TOKENS ——— */
+  /* ET Book — the typeface from Edward Tufte's books (body text). */
+  @font-face {
+    font-family: "et-book";
+    src: url("https://cdn.jsdelivr.net/gh/edwardtufte/et-book/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff") format("woff");
+    font-weight: normal; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "et-book";
+    src: url("https://cdn.jsdelivr.net/gh/edwardtufte/et-book/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.woff") format("woff");
+    font-weight: normal; font-style: italic; font-display: swap;
+  }
+  @font-face {
+    font-family: "et-book";
+    src: url("https://cdn.jsdelivr.net/gh/edwardtufte/et-book/et-book/et-book-bold-line-figures/et-book-bold-line-figures.woff") format("woff");
+    font-weight: bold; font-style: normal; font-display: swap;
+  }
+
+  /* ——————————————————————————————————————————————
+     Tokens — ink on paper.
+  —————————————————————————————————————————————— */
   :root {
-    --serif: 'Cormorant Garamond', 'Georgia', serif;
-    --sans: 'DM Sans', -apple-system, sans-serif;
-    --mono: 'JetBrains Mono', 'SF Mono', monospace;
-    --speed: 0.5s;
-  }
+    --paper:   #fffffc;
+    --ink:     #161513;
+    --ink-soft:#5b574e;
+    --ink-faint:#8d887d;
+    --rule:    #e2ddd0;
+    --accent:  #9a3b2e;
+    --accent-bg:#f5ece6;
 
-  [data-theme="dark"] {
-    --bg: #0a0a0a;
-    --bg-elevated: rgba(10, 10, 10, 0.85);
-    --fg: #e8e4df;
-    --fg-muted: #8a8580;
-    --fg-subtle: #5a5550;
-    --accent: #c4b5a0;
-    --accent-dim: #3a3530;
-    --border: #1e1c1a;
-    --card-hover: rgba(196, 181, 160, 0.02);
-    --glow: rgba(196, 181, 160, 0.03);
-  }
+    --serif:   "et-book", "Palatino Linotype", "Palatino", "Book Antiqua", Georgia, serif;
+    --display: "Cormorant Garamond", "et-book", Georgia, serif;   /* thin, curved — the book-cover face */
+    --mono:    "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
 
-  [data-theme="light"] {
-    --bg: #f5f2ed;
-    --bg-elevated: rgba(245, 242, 237, 0.88);
-    --fg: #1a1816;
-    --fg-muted: #5c5750;
-    --fg-subtle: #9a948c;
-    --accent: #7a6b58;
-    --accent-dim: #d5cec4;
-    --border: #ddd8d0;
-    --card-hover: rgba(122, 107, 88, 0.04);
-    --glow: rgba(122, 107, 88, 0.06);
+    --measure: 33rem;
+    --margin-col: 17rem;
+    --gap: 2.75rem;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  ::selection {
-    background: var(--accent);
-    color: var(--bg);
-  }
-
-  html { scroll-behavior: smooth; font-size: 16px; }
+  html { font-size: 15.5px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
   body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: var(--sans);
-    font-weight: 400;
-    line-height: 1.65;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 1.18rem;
+    line-height: 1.62;
+    font-feature-settings: "onum" 1, "liga" 1, "kern" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
-    transition: background var(--speed) ease, color var(--speed) ease;
   }
 
-  /* ——— NAV ——— */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 1.25rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--bg-elevated);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    transition: background var(--speed) ease, border-color var(--speed) ease;
+  ::selection { background: var(--accent-bg); color: var(--ink); }
+
+  a { color: var(--ink); text-decoration: none;
+      background-image: linear-gradient(var(--accent), var(--accent));
+      background-position: 0 1.05em; background-repeat: no-repeat; background-size: 100% 1px;
+      transition: background-size .2s ease, color .2s ease; }
+  a:hover { color: var(--accent); }
+
+  /* ——————————————————————————————————————————————
+     Running header — quiet book headline.
+     Name in italic ET-book; the menu in Cormorant small-caps
+     (a deliberately different face from the title).
+  —————————————————————————————————————————————— */
+  header.running {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; justify-content: flex-end; align-items: baseline;
+    padding: 0.85rem max(1.5rem, 4vw);
+    background: color-mix(in srgb, var(--paper) 90%, transparent);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--rule);
   }
-
-  nav .logo {
-    font-family: var(--serif);
-    font-size: 1.35rem;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    color: var(--fg);
-    text-decoration: none;
-    transition: color var(--speed) ease;
+  header.running .name {
+    font-family: var(--serif); font-style: italic; font-size: 1.08rem;
+    letter-spacing: .01em; color: var(--ink);
   }
-
-  nav .logo span {
-    color: var(--fg-muted);
-    font-weight: 300;
-    transition: color var(--speed) ease;
+  header.running nav { display: flex; gap: 1.55rem; }
+  header.running nav a {
+    font-family: var(--display); font-weight: 500;
+    font-size: 0.92rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-faint); background: none;
   }
+  header.running nav a:hover { color: var(--accent); }
 
-  nav .nav-right {
-    display: flex;
-    gap: 2.5rem;
-    align-items: center;
-  }
-
-  nav .links {
-    display: flex;
-    gap: 2.5rem;
-    align-items: center;
-  }
-
-  nav .links a {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--fg-muted);
-    text-decoration: none;
-    transition: color 0.3s ease;
-    position: relative;
-  }
-
-  nav .links a::after {
-    content: '';
-    position: absolute;
-    bottom: -4px; left: 0;
-    width: 0; height: 1px;
-    background: var(--accent);
-    transition: width 0.3s ease;
-  }
-
-  nav .links a:hover { color: var(--fg); }
-  nav .links a:hover::after { width: 100%; }
-
-  /* ——— THEME TOGGLE ——— */
-  .theme-toggle {
-    appearance: none;
-    background: none;
-    border: 1px solid var(--border);
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--fg-muted);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .theme-toggle:hover {
-    border-color: var(--accent);
-    color: var(--fg);
-  }
-
-  .theme-toggle .icon-sun,
-  .theme-toggle .icon-moon {
-    position: absolute;
-    font-size: 0.8rem;
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    line-height: 1;
-  }
-
-  [data-theme="dark"] .icon-moon { transform: translateY(0) rotate(0deg); opacity: 1; }
-  [data-theme="dark"] .icon-sun  { transform: translateY(14px) rotate(90deg); opacity: 0; }
-  [data-theme="light"] .icon-sun  { transform: translateY(0) rotate(0deg); opacity: 1; }
-  [data-theme="light"] .icon-moon { transform: translateY(-14px) rotate(-90deg); opacity: 0; }
-
-  /* ——— HERO ——— */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 8rem 3rem 4rem;
-    max-width: 1200px;
+  /* ——————————————————————————————————————————————
+     Page frame & manuscript grid.
+  —————————————————————————————————————————————— */
+  .page {
+    max-width: calc(var(--measure) + var(--gap) + var(--margin-col) + 8vw);
     margin: 0 auto;
-    position: relative;
+    padding: 0 max(1.5rem, 4vw) 9rem;
   }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 15%; right: -10%;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .hero-label {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--fg-subtle);
-    margin-bottom: 2rem;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.2s forwards;
-    transition: color var(--speed) ease;
-  }
-
-  .hero h1 {
-    font-family: var(--serif);
-    font-size: clamp(3rem, 7vw, 5.5rem);
-    font-weight: 300;
-    line-height: 1.08;
-    letter-spacing: -0.03em;
-    color: var(--fg);
-    max-width: 900px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.4s forwards;
-    transition: color var(--speed) ease;
-  }
-
-  .hero h1 em {
-    font-style: italic;
-    color: var(--accent);
-    transition: color var(--speed) ease;
-  }
-
-  .hero-description {
-    font-family: var(--sans);
-    font-size: 1.05rem;
-    font-weight: 300;
-    line-height: 1.75;
-    color: var(--fg-muted);
-    max-width: 580px;
-    margin-top: 2.5rem;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.6s forwards;
-    transition: color var(--speed) ease;
-  }
-
-  .hero-meta {
-    display: flex;
-    gap: 3rem;
-    margin-top: 3.5rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.8s forwards;
-    transition: border-color var(--speed) ease;
-  }
-
-  .hero-meta .meta-item { display: flex; flex-direction: column; gap: 0.3rem; }
-
-  .hero-meta .meta-label {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--fg-subtle);
-    transition: color var(--speed) ease;
-  }
-
-  .hero-meta .meta-value {
-    font-family: var(--sans);
-    font-size: 0.85rem;
-    color: var(--fg-muted);
-    font-weight: 400;
-    transition: color var(--speed) ease;
-  }
-
-  .hero-meta .meta-value a {
-    color: var(--fg-muted);
-    text-decoration: none;
-    border-bottom: 1px solid var(--accent-dim);
-    transition: all 0.3s ease;
-  }
-
-  .hero-meta .meta-value a:hover {
-    color: var(--fg);
-    border-color: var(--accent);
-  }
-
-  /* ——— SECTIONS ——— */
-  section { padding: 6rem 3rem; max-width: 1200px; margin: 0 auto; }
-
-  .section-label {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--fg-subtle);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-bottom: 3rem;
-    transition: color var(--speed) ease;
-  }
-
-  .section-label::before {
-    content: '▨';
-    color: var(--accent-dim);
-    transition: color var(--speed) ease;
-  }
-
-  .section-divider { max-width: 1200px; margin: 0 auto; padding: 0 3rem; }
-
-  .section-divider hr {
-    border: none;
-    height: 1px;
-    background: var(--border);
-    transition: background var(--speed) ease;
-  }
-
-  /* ——— WRITING ——— */
-  .writing-grid { display: flex; flex-direction: column; gap: 0; }
-
-  .writing-item {
+  .row {
     display: grid;
-    grid-template-columns: 120px 1fr auto;
-    gap: 2.5rem;
-    align-items: baseline;
-    padding: 1.5rem 0;
-    border-bottom: 1px solid var(--border);
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-
-  .writing-item:first-child { border-top: 1px solid var(--border); }
-
-  .writing-item:hover {
-    padding-left: 1rem;
-    background: var(--card-hover);
-  }
-
-  .writing-item:hover .writing-title { color: var(--fg); }
-
-  .writing-item:hover .writing-arrow {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .writing-date {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: var(--fg-subtle);
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    transition: color var(--speed) ease;
-  }
-
-  .writing-content { display: flex; flex-direction: column; gap: 0.3rem; }
-
-  .writing-title {
-    font-family: var(--serif);
-    font-size: 1.25rem;
-    font-weight: 500;
-    color: var(--fg-muted);
-    line-height: 1.35;
-    transition: color 0.3s ease;
-  }
-
-  .writing-venue {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    color: var(--fg-subtle);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: color var(--speed) ease;
-  }
-
-  .writing-arrow {
-    font-family: var(--mono);
-    font-size: 0.85rem;
-    color: var(--accent);
-    opacity: 0;
-    transform: translateX(-8px);
-    transition: all 0.3s ease;
-  }
-
-  /* ——— WORK ——— */
-  .work-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .work-card {
-    border: 1px solid var(--border);
-    padding: 2.25rem;
-    transition: all 0.4s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .work-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 2px;
-    background: var(--accent-dim);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s ease, background 0.4s ease;
-  }
-
-  .work-card:hover::before {
-    transform: scaleX(1);
-    background: var(--accent);
-  }
-
-  .work-card:hover {
-    border-color: var(--accent-dim);
-    background: var(--card-hover);
-  }
-
-  .work-card-tag {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1.25rem;
-    display: inline-block;
-    padding: 0.2rem 0.5rem;
-    border: 1px solid var(--accent-dim);
-    transition: all var(--speed) ease;
-  }
-
-  .work-card h3 {
-    font-family: var(--serif);
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: var(--fg);
-    margin-bottom: 0.75rem;
-    line-height: 1.25;
-    transition: color var(--speed) ease;
-  }
-
-  .work-card p {
-    font-size: 0.88rem;
-    color: var(--fg-muted);
-    line-height: 1.7;
-    font-weight: 300;
-    transition: color var(--speed) ease;
-  }
-
-  .work-card .work-role {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    color: var(--fg-subtle);
-    letter-spacing: 0.05em;
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-    transition: all var(--speed) ease;
-  }
-
-  /* ——— TEACHING ——— */
-  .teaching-list { display: flex; flex-direction: column; gap: 2rem; }
-
-  .teaching-item {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 2.5rem;
+    grid-template-columns: minmax(0, var(--measure)) var(--gap) minmax(0, var(--margin-col));
     align-items: start;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border);
-    transition: border-color var(--speed) ease;
+  }
+  .row > .main   { grid-column: 1; }
+  .row > .margin { grid-column: 3; }
+
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ——————————————————————————————————————————————
+     Hero — large, thin, centered name (book-cover style).
+  —————————————————————————————————————————————— */
+  .hero { text-align: center; padding: 7rem 0 0; }
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 300; font-style: normal;
+    font-size: clamp(3.4rem, 9vw, 6.2rem);
+    line-height: 1.0; letter-spacing: 0.01em;
+    color: var(--ink);
   }
 
-  .teaching-item:last-child { border-bottom: none; padding-bottom: 0; }
-
-  .teaching-meta { display: flex; flex-direction: column; gap: 0.3rem; }
-
-  .teaching-term {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: var(--fg-subtle);
-    letter-spacing: 0.05em;
-    transition: color var(--speed) ease;
+  /* portrait placeholder + In-Residence note sit together below the name */
+  .intro { margin-top: 3.5rem; }
+  figure.portrait { margin: 0 auto; max-width: 21rem; }
+  figure.portrait img {
+    width: 100%; height: auto; display: block; aspect-ratio: 1 / 1; object-fit: cover;
+    background: #fff; padding: 7px;
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 3px rgba(22,21,19,.08);
+  }
+  figure.portrait figcaption {
+    font-size: 0.86rem; color: var(--ink-soft); margin-top: 0.5rem; font-style: italic;
   }
 
-  .teaching-inst {
-    font-family: var(--sans);
-    font-size: 0.8rem;
-    color: var(--fg-muted);
-    font-weight: 400;
-    transition: color var(--speed) ease;
+  /* space before the prose begins (on the row, so the margin note tracks it) */
+  .standfirst-row { margin-top: 4.5rem; }
+  .standfirst {
+    font-size: 1.24rem; color: var(--ink); max-width: var(--measure);
   }
 
-  .teaching-body h4 {
+  hr.rule { border: none; height: 1px; background: var(--rule); margin: 3.4rem 0; }
+  .row > hr.rule { grid-column: 1 / -1; }
+
+  /* ——————————————————————————————————————————————
+     Section headings (no § labels).
+  —————————————————————————————————————————————— */
+  section { scroll-margin-top: 4rem; }
+  h2 {
     font-family: var(--serif);
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: var(--fg);
-    margin-bottom: 0.5rem;
-    transition: color var(--speed) ease;
+    font-weight: 400; font-style: italic;
+    font-size: clamp(1.7rem, 3.4vw, 2.15rem); line-height: 1.12;
+    letter-spacing: -0.01em; margin-bottom: 1.1rem;
+  }
+  .main p { margin-bottom: 1.05rem; }
+  .main p:last-child { margin-bottom: 0; }
+
+  /* ——————————————————————————————————————————————
+     Margin notes — appear as the row scrolls into view,
+     brighten on hover of their referenced phrase.
+  —————————————————————————————————————————————— */
+  .note {
+    font-size: 0.92rem; line-height: 1.5; color: var(--ink-soft);
+    padding: 0 0 0 0.9rem; margin-bottom: 1.2rem;
+    border-left: 2px solid transparent;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity .55s ease, transform .55s ease, color .25s ease, border-color .25s ease;
+  }
+  .note:last-child { margin-bottom: 0; }
+  .row.visible .note, .hero .note, .note.show { opacity: 0.6; transform: none; }
+  .note .num {
+    font-family: var(--serif); color: var(--accent);
+    font-size: 0.8em; vertical-align: super; line-height: 0; margin-right: 0.25em;
+  }
+  .note.active, .row.visible .note.active {
+    opacity: 1; color: var(--ink);
+    border-left-color: var(--accent); transform: translateX(2px);
+  }
+  .note .note-label {
+    display: block; font-family: var(--mono); font-size: 0.6rem;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint);
+    margin-bottom: 0.25rem;
   }
 
-  .teaching-body p {
-    font-size: 0.88rem;
-    color: var(--fg-muted);
-    line-height: 1.7;
-    font-weight: 300;
-    transition: color var(--speed) ease;
+  .ref {
+    cursor: help; color: inherit;
+    background-image: linear-gradient(var(--rule), var(--rule));
+    background-position: 0 1.04em; background-repeat: no-repeat; background-size: 100% 1px;
+    transition: background-size .2s ease, color .2s ease;
   }
+  .ref:hover, .ref.active { color: var(--accent); background-image: linear-gradient(var(--accent), var(--accent)); }
+  .ref sup { font-size: 0.66em; color: var(--accent); margin-left: 0.05em; }
 
-  /* ——— ABOUT ——— */
-  .about-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+  .margin-figure { margin-bottom: 1.2rem; }
+  .margin-figure svg { width: 100%; height: auto; display: block; }
+  .margin-figure figcaption { font-size: 0.82rem; color: var(--ink-soft); line-height: 1.4; margin-top: 0.45rem; }
+
+  /* ——————————————————————————————————————————————
+     Writing list.
+  —————————————————————————————————————————————— */
+  .writing { list-style: none; }
+  .writing li { padding: 0.85rem 0; border-bottom: 1px solid var(--rule); }
+  .writing li:first-child { border-top: 1px solid var(--rule); }
+  .writing .w-title { font-size: 1.16rem; line-height: 1.3; display: inline; }
+  .writing a.w-title:hover { color: var(--accent); }
+  .w-row { display: grid; grid-template-columns: minmax(0, var(--measure)) var(--gap) minmax(0, var(--margin-col)); }
+  .w-row .w-main { grid-column: 1; }
+  .w-row .w-meta {
+    grid-column: 3; align-self: center;
+    font-size: 0.86rem; color: var(--ink-soft); opacity: 0.62;
+    transition: opacity .25s ease, color .25s ease;
   }
+  .w-row:hover .w-meta { opacity: 1; color: var(--ink); }
+  .w-row .w-meta .w-year { font-family: var(--mono); font-size: 0.74rem; color: var(--accent); display: block; }
+  .w-row .w-meta .w-venue { font-style: italic; }
+  .w-desc { display: block; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.45; margin-top: 0.25rem; }
+  .w-note { display: block; font-size: 0.85rem; color: var(--ink-soft); line-height: 1.45; margin-top: 0.4rem; }
+  .w-note .w-note-label { font-family: var(--mono); font-size: 0.58rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-right: 0.4em; }
+  .lead-note { color: var(--ink-soft); font-size: 1.04rem; margin-bottom: 1.5rem; }
+  .writing li[id] { scroll-margin-top: 4.5rem; }
 
-  .about-text { display: flex; flex-direction: column; gap: 1.25rem; }
-
-  .about-text p {
-    font-size: 0.95rem;
-    color: var(--fg-muted);
-    line-height: 1.8;
-    font-weight: 300;
-    transition: color var(--speed) ease;
+  /* ——————————————————————————————————————————————
+     Facts.
+  —————————————————————————————————————————————— */
+  .facts { display: flex; flex-direction: column; gap: 1.4rem; }
+  .fact .fact-label {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--ink-faint); display: block; margin-bottom: 0.3rem;
   }
+  .fact .fact-body { font-size: 1.02rem; color: var(--ink); }
+  .fact .fact-body span { display: block; }
 
-  .about-text p:first-child {
-    font-family: var(--serif);
-    font-size: 1.3rem;
-    font-weight: 400;
-    color: var(--fg);
-    line-height: 1.6;
-  }
-
-  .about-details { display: flex; flex-direction: column; gap: 2rem; padding-top: 0.5rem; }
-
-  .detail-group { display: flex; flex-direction: column; gap: 0.6rem; }
-
-  .detail-group-label {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--fg-subtle);
-    transition: color var(--speed) ease;
-  }
-
-  .detail-group-items { display: flex; flex-direction: column; gap: 0.3rem; }
-
-  .detail-group-items span {
-    font-size: 0.88rem;
-    color: var(--fg-muted);
-    font-weight: 300;
-    transition: color var(--speed) ease;
-  }
-
-  .detail-group-items a {
-    color: var(--fg-muted);
-    text-decoration: none;
-    border-bottom: 1px solid var(--accent-dim);
-    transition: all 0.3s ease;
-  }
-
-  .detail-group-items a:hover {
-    color: var(--fg);
-    border-color: var(--accent);
-  }
-
-  /* ——— FOOTER ——— */
+  /* ——————————————————————————————————————————————
+     Footer.
+  —————————————————————————————————————————————— */
   footer {
-    padding: 4rem 3rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
-    transition: border-color var(--speed) ease;
+    border-top: 1px solid var(--rule); margin-top: 4rem; padding-top: 1.6rem;
+    display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 1rem;
+    font-size: 0.86rem; color: var(--ink-soft);
+  }
+  footer .f-links { display: flex; gap: 1.3rem; }
+  footer .f-links a { font-family: var(--display); font-weight: 500; font-size: 0.86rem; letter-spacing: .12em; text-transform: uppercase; background: none; color: var(--ink-faint); }
+  footer .f-links a:hover { color: var(--accent); }
+
+  /* ——————————————————————————————————————————————
+     Harmonograph after Ivan Moscovich.
+  —————————————————————————————————————————————— */
+  .machine {
+    position: fixed; right: clamp(0.6rem, 2vw, 1.4rem); bottom: clamp(1.4rem, 3vw, 2rem);
+    width: clamp(104px, 13vw, 158px); height: clamp(104px, 13vw, 158px);
+    z-index: 40; pointer-events: none; user-select: none;
+  }
+  .machine canvas { width: 100%; height: 100%; display: block; }
+  .machine .cap {
+    text-align: center; margin-top: 0.3rem;
+    font-family: var(--mono); font-size: 0.52rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-faint);
   }
 
-  .footer-left { display: flex; flex-direction: column; gap: 0.5rem; }
-
-  .footer-name {
-    font-family: var(--serif);
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: var(--fg);
-    transition: color var(--speed) ease;
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .note { opacity: .6; transform: none; }
   }
 
-  .footer-copy {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    color: var(--fg-subtle);
-    letter-spacing: 0.05em;
-    transition: color var(--speed) ease;
+  /* ——————————————————————————————————————————————
+     Narrow screens.
+  —————————————————————————————————————————————— */
+  @media (max-width: 1000px) {
+    :root { --measure: 100%; }
+    .row, .w-row { grid-template-columns: 1fr; }
+    .row > .main, .row > .margin { grid-column: 1; }
+    .w-row .w-main, .w-row .w-meta { grid-column: 1; }
+    .margin { margin: 0.4rem 0 1.6rem; padding-left: 0.9rem; border-left: 2px solid var(--rule); }
+    .note { opacity: 1 !important; transform: none !important; border-left: none; padding-left: 0; }
+    .w-row .w-meta { opacity: 1; color: var(--ink-soft); margin-top: 0.2rem; }
+    .machine { width: 84px; height: 84px; }
+    .machine .cap { display: none; }
   }
-
-  .footer-links { display: flex; gap: 2rem; }
-
-  .footer-links a {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--fg-subtle);
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-
-  .footer-links a:hover { color: var(--fg); }
-
-  /* ——— ANIMATIONS ——— */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ——— RESPONSIVE ——— */
-  @media (max-width: 768px) {
-    nav { padding: 1rem 1.5rem; }
-    nav .nav-right { gap: 1.5rem; }
-    nav .links { gap: 1.5rem; }
-    nav .links a { font-size: 0.6rem; }
-
-    .hero { padding: 7rem 1.5rem 3rem; }
-    .hero h1 { font-size: clamp(2.2rem, 8vw, 3.5rem); }
-    .hero-meta { flex-direction: column; gap: 1.5rem; }
-
-    section { padding: 4rem 1.5rem; }
-    .section-divider { padding: 0 1.5rem; }
-
-    .writing-item { grid-template-columns: 1fr; gap: 0.3rem; }
-    .writing-arrow { display: none; }
-
-    .work-grid { grid-template-columns: 1fr; }
-
-    .teaching-item { grid-template-columns: 1fr; gap: 0.75rem; }
-
-    .about-content { grid-template-columns: 1fr; gap: 2.5rem; }
-
-    footer {
-      flex-direction: column;
-      gap: 2rem;
-      align-items: start;
-      padding: 3rem 1.5rem;
-    }
+  @media (max-width: 620px) {
+    body { font-size: 1.1rem; }
+    header.running nav { gap: 1rem; }
+    header.running nav a { font-size: 0.78rem; letter-spacing: .1em; }
   }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a href="#" class="logo">Charlie Pozniak<span> .</span></a>
-  <div class="nav-right">
-    <div class="links">
-      <a href="#writing">Writing</a>
-      <a href="#work">Work</a>
-      <a href="#teaching">Teaching</a>
-      <a href="#about">About</a>
-    </div>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-      <span class="icon-sun">☀</span>
-      <span class="icon-moon">☽</span>
-    </button>
-  </div>
-</nav>
+<!-- ———————————————————— RUNNING HEADER ———————————————————— -->
+<header class="running">
+  <nav>
+    <a href="#projects">Working</a>
+    <a href="#writing">Writing</a>
+    <a href="#talks">Talking</a>
+    <a href="#teaching">Teaching</a>
+  </nav>
+</header>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-label">Research Fellow · Harvard Kennedy School</div>
-  <h1>Decisions under <em>uncertainty</em></h1>
-  <p class="hero-description">
-    A researcher investigating how people, algorithms, and institutions make sense of a complex world and building tools to help.
-  </p>
-  <div class="hero-meta">
-    <div class="meta-item">
-      <span class="meta-label">Affiliation</span>
-      <span class="meta-value">Belfer Center for Science<br>& International Affairs</span>
-    </div>
-    <div class="meta-item">
-      <span class="meta-label">Projects</span>
-      <span class="meta-value"><a href="#">Move37</a> — AI for Diplomacy</span>
-    </div>
-    <div class="meta-item">
-      <span class="meta-label">Contact</span>
-      <span class="meta-value">cpozniak[at]hks[dot]harvard[dot]edu</a></span>
-    </div>
-  </div>
-</div>
+<main class="page">
 
-<!-- WRITING -->
-<div class="section-divider"><hr></div>
-<section id="writing">
-  <div class="section-label reveal">Writing</div>
-  <div class="writing-grid">
-    <a class="writing-item reveal" href="#">
-      <span class="writing-date">2026</span>
-      <div class="writing-content">
-        <span class="writing-title">Benchmarking Multi-Agent Collective Intelligence Risks in AI</span>
-        <span class="writing-venue">Working Paper</span>
-      </div>
-      <span class="writing-arrow">↗</span>
-    </a>
-    <a class="writing-item reveal"
-       href="https://www.dropbox.com/scl/fi/zne69cgsq0u1vtx67l70k/rogues_reckless_reasonable.pdf?rlkey=dqxm4v58pekz2658l3xivw4em&st=k0i7378h&dl=0"
-       target="_blank"
-       rel="noopener noreferrer">
-      <span class="writing-date">2025</span>
-      <div class="writing-content">
-        <span class="writing-title">The Rogues, the Reckless, and the Reasonable: A Taxonomy for AI Risk Governance</span>
-        <span class="writing-venue">Working Paper</span>
-      </div>
-      <span class="writing-arrow">↗</span>
-    </a>
-    <a class="writing-item reveal" href="#">
-      <span class="writing-date">2025</span>
-      <div class="writing-content">
-        <span class="writing-title">Often Late: The Structural Causes of Policy Delays</span>
-        <span class="writing-venue">Under Review</span>
-      </div>
-      <span class="writing-arrow">↗</span>
-    </a>
-    <a class="writing-item reveal" href="#">
-      <span class="writing-date">2025</span>
-      <div class="writing-content">
-        <span class="writing-title">Decision Coherence in Large Language Models: A POMDP Framework</span>
-        <span class="writing-venue">Working Paper</span>
-      </div>
-      <span class="writing-arrow">↗</span>
-    </a>
-    <a class="writing-item reveal" href="#">
-      <span class="writing-date">2025</span>
-      <div class="writing-content">
-        <span class="writing-title">AI-Assisted Strategic Negotiation: From Context Graphs to Bargaining Theory</span>
-        <span class="writing-venue">Move37 Research</span>
-      </div>
-      <span class="writing-arrow">↗</span>
-    </a>
-    <a class="writing-item reveal" href="#">
-      <span class="writing-date">2024</span>
-      <div class="writing-content">
-        <span class="writing-title">Cultural Evolution, Innovation Economics, and the Diffusion of Ideas</span>
-        <span class="writing-venue">Working Paper</span>
-      </div>
-      <span class="writing-arrow">↗</span>
-    </a>
+  <!-- ———————————————————— HERO ———————————————————— -->
+  <div class="hero">
+    <h1>Charlie&nbsp;Pozniak</h1>
   </div>
-</section>
 
-<!-- WORK -->
-<div class="section-divider"><hr></div>
-<section id="work">
-  <div class="section-label reveal">Work</div>
-  <div class="work-grid">
-    <div class="work-card reveal">
-      <span class="work-card-tag">Research</span>
-      <h3>Move37</h3>
-      <p>A hybrid research, policy, and technology project developing AI systems for negotiations, diplomacy, and conflict management. Developing multi-model AI architectures for strategic decision-support, grounded in game theory, bargaining theory, and formal representations of diplomatic problems.</p>
-      <div class="work-role">Founder & Principal Investigator · Belfer Center, Harvard Kennedy School</div>
+  <div class="row intro">
+    <div class="main">
+      <figure class="portrait reveal">
+        <img src="portrait.jpg" alt="Charlie Pozniak" width="1280" height="1280">
+      </figure>
     </div>
-    <div class="work-card reveal">
-      <span class="work-card-tag">Advisory</span>
-      <h3>Strategic Consulting</h3>
-      <p>Decision analysis and strategy for institutions and technology firms. Current engagements span finance, technology, and policy.</p>
-      <div class="work-role">Independent Advisor</div>
-    </div>
-    <div class="work-card reveal">
-      <span class="work-card-tag">Technology</span>
-      <h3>Decision Systems</h3>
-      <p>Building tools at the intersection of behavioral economics, evolutionary dynamics, and computer science. Focused on how agents — human and artificial — process uncertainty and reach coherent decisions.</p>
-      <div class="work-role">Technical Research & Prototyping</div>
-    </div>
-  </div>
-</section>
-
-<!-- TEACHING -->
-<div class="section-divider"><hr></div>
-<section id="teaching">
-  <div class="section-label reveal">Teaching</div>
-  <div class="teaching-list">
-    <div class="teaching-item reveal">
-      <div class="teaching-meta">
-        <span class="teaching-term">Fall 2025</span>
-        <span class="teaching-inst">Harvard Kennedy School</span>
+    <aside class="margin" style="padding-top:0.4rem">
+      <div class="note">
+        <span class="note-label">Location</span>
+        Belfer Center, Harvard University, <br>
+        Cambridge, MA.
       </div>
-      <div class="teaching-body">
-        <h4>ECON1415/API-302: Analytic Methods for Policy</h4>
-        <p>A class on analytic techniques relating to uncertainty and interactive decision problems.
+      <div class="note">
+        <span class="note-label">Links</span>
+        <span style="display:block"><a href="https://scholar.google.com/citations?user=8FqS8HoAAAAJ&hl=en&oi=ao" target="_blank" rel="noopener noreferrer">Google Scholar</a></span>
+        <span style="display:block"><a href="https://twitter.com/charliepoz" target="_blank" rel="noopener noreferrer">X / Twitter</a></span>
+        <span style="display:block"><a href="https://linkedin.com/in/charliepozniak" target="_blank" rel="noopener noreferrer">LinkedIn</a></span>
+        <span style="display:block"><a href="https://github.com/charliepoz" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+      </div>
+      <div class="note">
+        <span class="note-label">Contact</span>
+        cpozniak&thinsp;[at]&thinsp;hks&thinsp;[dot]&thinsp;harvard&thinsp;[dot]&thinsp;edu
+      </div>
+    </aside>
+  </div>
+
+  <div class="row standfirst-row">
+    <div class="main">
+      <p class="standfirst">
+        Hi, I'm Charlie. I'm a research fellow at Harvard looking at
+        <span class="ref" data-note="n-agents">information, decisions, and institutions.<sup>1</sup></span>
+        I like hard problems in uncertain environments and building tools to help make them a little easier.
+      </p>
+    </div>
+    <aside class="margin">
+      <div class="note" data-note="n-agents">
+        <span class="num">1</span>
+        This covers a lot of ground; more to follow. 
+      </div>
+    </aside>
+  </div>
+
+  <div class="row"><hr class="rule"></div>
+
+  <!-- ———————————————————— ABOUT ———————————————————— -->
+  <section id="about">
+    <div class="row reveal">
+      <div class="main">
+        <h2>A bit about me</h2>
+        <p>
+          Most of what I do comes back to how we make consequential
+          choices under
+          <span class="ref" data-note="n-uncertainty">uncertainty<sup></sup></span>.
+        </p>
+        <p>
+          Right now I run <a href="#projects">Move&nbsp;37</a> at Harvard's Belfer
+          Center. We're a small team building, evaluating, and conceptualizing AI for statecraft. On the side I help funds and firms 
+          think about decision analysis and AI, along with a few of my own projects.
+        </p>
+        <p>
+          Before Harvard I spent a few years at the World Bank in Central Asia, working on policy and technology. 
+          Before that I studied History at Oxford and played 
+          <a href="https://www.pressreader.com/uk/the-daily-telegraph-sport/20191212/page/12" target="_blank" rel="noopener noreferrer">professional rugby</a> — which is where I
+          learned about decisions under pressure.
+        </p>
+      </div>
+      <aside class="margin">
+        <div class="note" data-note="n-uncertainty">
+          <span class="num"></span>
+
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <div class="row"><hr class="rule"></div>
+
+  <!-- ———————————————————— TEACHING ———————————————————— -->
+  <section id="teaching">
+    <div class="row reveal">
+      <div class="main">
+        <h2>Teaching</h2>
+        <p>
+          I am a teaching fellow for
+          <span class="ref" data-note="n-course">EC1415 / API-302: Analytic Frameworks for Policy<sup>5</sup></span>
+          at the Kennedy School — optimization, game theory, decision analysis, and
+          interactive decision problems. 
+        </p>
+        <p>
+          I've also designed and taught graduate classes on AI/ML, decision
+          analysis, and economic complexity at the
+          <span class="ref" data-note="n-bolivia">Universidad Católica Boliviana<sup>6</sup></span>
+          in La Paz.
+        </p>
+      </div>
+      <aside class="margin">
+        <div class="note" data-note="n-course">
+          <span class="num">5</span>
+          This class is taught by Prof. Richard Zeckhauser. TF'ing this class (2024 and 2025) has been a true privilege.
+        </div>
+        <div class="note" data-note="n-bolivia">
+          <span class="num">6</span>
+          Instructor &amp; Visiting Scholar, ePC Business School, La Paz, Bolivia (2024).
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <div class="row"><hr class="rule"></div>
+
+  <!-- ———————————————————— CREDENTIALS ———————————————————— -->
+  <section id="elsewhere">
+    <div class="row reveal">
+      <div class="main">
+        <h2>Education &amp; interests</h2>
+        <div class="facts">
+          <div class="fact">
+            <span class="fact-label">Education</span>
+            <div class="fact-body">
+              <span>MPP (STEM) — Harvard Kennedy School</span>
+              <span>BA, History — University of Oxford</span>
+            </div>
+          </div>
+          <div class="fact">
+            <span class="fact-label">Fellowships &amp; honors</span>
+            <div class="fact-body" style="font-size:0.98rem; line-height:1.55">
+              <span>John F. Kennedy Fellow</span>
+              <span>Belfer Young Leader Student Fellow</span>
+              <span>Yamauchi Family Fellow</span>
+              <span>Harvard Student Leader in AI</span>
+              <span>Vincent's Scholar, University of Oxford</span>
+            </div>
+          </div>
+          <div class="fact">
+            <span class="fact-label">Research Interests</span>
+            <div class="fact-body" style="font-size:0.98rem; line-height:1.55">
+              <span>Decision theory — people, institutions, and markets</span>
+              <span>Computational decision support — RL, MDPs, game theory</span>
+              <span>Forecasting — geopolitics, economics, and politics</span>
+              <span>Evolutionary and cultural evolution</span>
+              <span>Behavioral economics and how institutions decide</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="row"><hr class="rule"></div>
+
+  <!-- ———————————————————— PROJECTS ———————————————————— -->
+  <section id="projects">
+    <div class="row reveal">
+      <div class="main">
+        <h2>Things I'm building</h2>
+        <p class="lead-note">
+          A running list of projects I've worked on. This includes formal work, consulting projects, academic research, and side projects.
+        </p>
+      </div>
+      <aside class="margin">
+        <figure class="margin-figure" aria-hidden="true">
+          <svg viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="ai" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#161513"/></marker>
+              <marker id="ar" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#9a3b2e"/></marker>
+            </defs>
+            <g fill="none" stroke="#161513" stroke-width="1.4">
+              <rect x="78" y="18" width="84" height="30" rx="2"/>
+              <rect x="66" y="102" width="108" height="30" rx="2"/>
+            </g>
+            <text x="120" y="38" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="12.5" fill="#161513">Agent</text>
+            <text x="120" y="122" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="12.5" fill="#161513">Environment</text>
+            <path d="M162 33 H206 V117 H176" fill="none" stroke="#161513" stroke-width="1.4" stroke-linejoin="round" marker-end="url(#ai)"/>
+            <text transform="translate(216,75) rotate(90)" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#161513">action <tspan font-style="italic">A</tspan><tspan baseline-shift="sub" font-size="6.5">t</tspan></text>
+            <path d="M66 117 H34 V33 H78" fill="none" stroke="#9a3b2e" stroke-width="1.4" stroke-linejoin="round" marker-end="url(#ar)"/>
+            <line x1="28" y1="70" x2="40" y2="70" stroke="#9a3b2e" stroke-width="1" stroke-dasharray="2 2"/>
+            <text transform="translate(21,75) rotate(-90)" text-anchor="middle" font-family="Georgia, serif" font-size="8.5" fill="#9a3b2e">state <tspan font-style="italic">S</tspan><tspan baseline-shift="sub" font-size="6">t+1</tspan></text>
+            <text transform="translate(10,75) rotate(-90)" text-anchor="middle" font-family="Georgia, serif" font-size="8.5" fill="#9a3b2e">reward <tspan font-style="italic">R</tspan><tspan baseline-shift="sub" font-size="6">t+1</tspan></text>
+          </svg>
+        </figure>
+      </aside>
+    </div>
+
+    <ul class="writing reveal">
+      <li><div class="w-row"><div class="w-main">
+        <span class="w-title">bind</span>
+        <span class="w-desc">Secret.</span>
+      </div><div class="w-meta"><span class="w-year">2026</span><span class="w-venue">In progress</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <span class="w-title">Forge</span>
+        <span class="w-desc">An internal investment portal for a leading venture firm — bringing decision analysis and continuous learning together.</span>
+      </div><div class="w-meta"><span class="w-year">2026</span><span class="w-venue">Live in-house</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <a class="w-title" href="https://d-phi.com" target="_blank" rel="noopener noreferrer">Delphi ↗</a>
+        <span class="w-desc">A forecasting and trading system for prediction markets (Kalshi, Polymarket) — signal generation, automated execution, and a live dashboard for P&amp;L, positions, and risk.</span>
+      </div><div class="w-meta"><span class="w-year">2026</span><span class="w-venue">d-phi.com</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <a class="w-title" href="https://www.belfercenter.org/programs/emerging-technology-scientific-advancement-and-global-policy/move37-initiative" target="_blank" rel="noopener noreferrer">Move&nbsp;37 ↗</a>
+        <span class="w-desc">My research initiative at the Belfer Center: AI for negotiation, diplomacy, and conflict management, built as a portfolio of decomposable analytic modules. Named for AlphaGo's move 37 — the play no human would have made.</span>
+      </div><div class="w-meta"><span class="w-year">2025–26</span><span class="w-venue">Belfer Center</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <span class="w-title">g8keep</span>
+        <span class="w-desc">An autonomous model-compute optimization platform — the system behind <a href="#thesis">my thesis</a> on agential marketplaces for compute.</span>
+      </div><div class="w-meta"><span class="w-year">2025</span><span class="w-venue">Thesis build</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <a class="w-title" href="https://mearsheimer.ai" target="_blank" rel="noopener noreferrer">mearsheimer.ai ↗</a>
+        <span class="w-desc">A retrieval-augmented system for the political scientist, John Mearsheimer. Presented at the All-In Conference. Mearsheimer <a href="https://mearsheimer.substack.com/p/jjms-ai-chatbot" target="_blank" rel="noopener noreferrer">wrote about it ↗</a>, and it drew some <a href="https://www.tandfonline.com/doi/full/10.1080/15512169.2026.2612713" target="_blank" rel="noopener noreferrer">scholarly discussion ↗</a>.</span>
+      </div><div class="w-meta"><span class="w-year">2024</span><span class="w-venue">Experiment</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <a class="w-title" href="https://cyber.harvard.edu/story/2024-07/cross-sector-collaboration-explores-citys-urban-data" target="_blank" rel="noopener noreferrer">Boston Transit Network ↗</a>
+        <span class="w-desc">AI/ML and data-visualization tools for Boston's urban mobility, built with the City of Boston as a Berkman Klein Center research sprint. Exhibited at the Boston Museum of Science.</span>
+      </div><div class="w-meta"><span class="w-year">2024</span><span class="w-venue">Museum of Science</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <span class="w-title">clippr</span>
+        <span class="w-desc">A little command-line tool that chops up long videos from a list of timestamps — pull clips from conference talks, speeches, or matches without ever opening an editor.</span>
+      </div><div class="w-meta"><span class="w-year">2022</span><span class="w-venue">Side project</span></div></div></li>
+    </ul>
+  </section>
+
+  <div class="row"><hr class="rule"></div>
+
+  <!-- ———————————————————— WRITING ———————————————————— -->
+  <section id="writing">
+    <div class="row reveal">
+      <div class="main">
+        <h2>Papers &amp; writing</h2>
+        <p class="lead-note">
+          A mix of submissions under review and
+          working papers.
+        </p>
+      </div>
+      <aside class="margin">
+        <figure class="margin-figure" aria-hidden="true">
+          <svg viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#161513" stroke-width="0.5" stroke-opacity="0.32">
+              <line x1="32" y1="39" x2="98" y2="27"/><line x1="32" y1="39" x2="98" y2="51"/><line x1="32" y1="39" x2="98" y2="99"/><line x1="32" y1="39" x2="98" y2="123"/>
+              <line x1="32" y1="63" x2="98" y2="27"/><line x1="32" y1="63" x2="98" y2="51"/><line x1="32" y1="63" x2="98" y2="99"/><line x1="32" y1="63" x2="98" y2="123"/>
+              <line x1="32" y1="87" x2="98" y2="27"/><line x1="32" y1="87" x2="98" y2="51"/><line x1="32" y1="87" x2="98" y2="75"/><line x1="32" y1="87" x2="98" y2="99"/><line x1="32" y1="87" x2="98" y2="123"/>
+              <line x1="32" y1="111" x2="98" y2="27"/><line x1="32" y1="111" x2="98" y2="51"/><line x1="32" y1="111" x2="98" y2="75"/><line x1="32" y1="111" x2="98" y2="99"/><line x1="32" y1="111" x2="98" y2="123"/>
+              <line x1="98" y1="27" x2="164" y2="39"/><line x1="98" y1="27" x2="164" y2="63"/><line x1="98" y1="27" x2="164" y2="87"/><line x1="98" y1="27" x2="164" y2="111"/>
+              <line x1="98" y1="51" x2="164" y2="39"/><line x1="98" y1="51" x2="164" y2="63"/><line x1="98" y1="51" x2="164" y2="87"/><line x1="98" y1="51" x2="164" y2="111"/>
+              <line x1="98" y1="75" x2="164" y2="39"/><line x1="98" y1="75" x2="164" y2="87"/><line x1="98" y1="75" x2="164" y2="111"/>
+              <line x1="98" y1="99" x2="164" y2="39"/><line x1="98" y1="99" x2="164" y2="63"/><line x1="98" y1="99" x2="164" y2="87"/><line x1="98" y1="99" x2="164" y2="111"/>
+              <line x1="98" y1="123" x2="164" y2="39"/><line x1="98" y1="123" x2="164" y2="63"/><line x1="98" y1="123" x2="164" y2="87"/><line x1="98" y1="123" x2="164" y2="111"/>
+              <line x1="164" y1="39" x2="214" y2="60"/><line x1="164" y1="39" x2="214" y2="90"/>
+              <line x1="164" y1="63" x2="214" y2="90"/>
+              <line x1="164" y1="87" x2="214" y2="60"/><line x1="164" y1="87" x2="214" y2="90"/>
+              <line x1="164" y1="111" x2="214" y2="60"/><line x1="164" y1="111" x2="214" y2="90"/>
+            </g>
+            <g stroke="#9a3b2e" stroke-width="1.5" fill="none">
+              <line x1="32" y1="63" x2="98" y2="75"/><line x1="98" y1="75" x2="164" y2="63"/><line x1="164" y1="63" x2="214" y2="60"/>
+            </g>
+            <g fill="#fffffc" stroke="#161513" stroke-width="1.4">
+              <circle cx="32" cy="39" r="5.4"/><circle cx="32" cy="87" r="5.4"/><circle cx="32" cy="111" r="5.4"/>
+              <circle cx="98" cy="27" r="5.4"/><circle cx="98" cy="51" r="5.4"/><circle cx="98" cy="99" r="5.4"/><circle cx="98" cy="123" r="5.4"/>
+              <circle cx="164" cy="39" r="5.4"/><circle cx="164" cy="87" r="5.4"/><circle cx="164" cy="111" r="5.4"/>
+              <circle cx="214" cy="90" r="5.4"/>
+            </g>
+            <g fill="#fffffc" stroke="#9a3b2e" stroke-width="1.4">
+              <circle cx="32" cy="63" r="5.4"/><circle cx="98" cy="75" r="5.4"/><circle cx="164" cy="63" r="5.4"/><circle cx="214" cy="60" r="5.4"/>
+            </g>
+            <g fill="#9a3b2e">
+              <circle cx="32" cy="63" r="2"/><circle cx="98" cy="75" r="2"/><circle cx="164" cy="63" r="2"/><circle cx="214" cy="60" r="2"/>
+            </g>
+          </svg>
+        </figure>
+      </aside>
+    </div>
+
+    <ul class="writing reveal">
+      <li><div class="w-row"><div class="w-main">
+        <span class="w-title">The Verifiable Frontier: Task-Based Decomposition for AI Decision Support in High-Stakes Negotiation</span>
+      </div><div class="w-meta"><span class="w-year">2026</span><span class="w-venue">ACM EAAMO · under review</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <span class="w-title">Why Better LLMs Can Create Systemic Risk</span>
+        <span class="w-desc">with J. Ross, E. So, Z. De Simone, and A. Lo</span>
+      </div><div class="w-meta"><span class="w-year">2026</span><span class="w-venue">NeurIPS · under review</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <span class="w-title">The Foreign Policy AI Evaluation Gap</span>
+        <span class="w-desc">with J. Sania</span>
+      </div><div class="w-meta"><span class="w-year">2026</span><span class="w-venue">ICML TAIGR · poster</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <span class="w-title">Often Late: A Theoretical Framework for Diagnosing Wise Waiting from Deleterious Delay</span>
+      </div><div class="w-meta"><span class="w-year">2026</span><span class="w-venue">Working paper</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <span class="w-title">LLMs as Prospect Theorists: Inverse-S Probability Distortion in Prediction Market Forecasting</span>
+      </div><div class="w-meta"><span class="w-year">2026</span><span class="w-venue">Working paper</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <a class="w-title" href="https://www.dropbox.com/scl/fi/zne69cgsq0u1vtx67l70k/rogues_reckless_reasonable.pdf?rlkey=dqxm4v58pekz2658l3xivw4em&st=k0i7378h&dl=0" target="_blank" rel="noopener noreferrer">The Rogues, the Reckless, and the Reasonable: A Taxonomy for AI Risk Governance ↗</a>
+      </div><div class="w-meta"><span class="w-year">2026</span><span class="w-venue">Working paper</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <span class="w-title">Towards a Theory of Computational Statecraft</span>
+      </div><div class="w-meta"><span class="w-year">2026</span><span class="w-venue">Move&nbsp;37 whitepaper · forthcoming</span></div></div></li>
+
+      <li id="thesis"><div class="w-row"><div class="w-main">
+        <span class="w-title">Autonomous Agential Marketplaces for Compute</span>
+        <span class="w-desc">My Harvard Kennedy School thesis (Policy Analysis Exercise) — built as <a href="#projects">g8keep</a>.</span>
+      </div><div class="w-meta"><span class="w-year">2025</span><span class="w-venue">HKS · thesis</span></div></div></li>
+    </ul>
+  </section>
+
+  <div class="row"><hr class="rule"></div>
+
+  <!-- ———————————————————— TALKS ———————————————————— -->
+  <section id="talks">
+    <div class="row reveal">
+      <div class="main">
+        <h2>Talks</h2>
+        <p class="lead-note">
+          Talks given over the past few years.
         </p>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ABOUT -->
-<div class="section-divider"><hr></div>
-<section id="about">
-  <div class="section-label reveal">About</div>
-  <div class="about-content reveal">
-    <div class="about-text">
-      <p>Unpacking the mechanics of consequential choice in a variety of settings. Individuals, algorithms, and institutions decide under uncertainty, and what happens when those systems fail.</p>
-      <p>This work draws on game theory, behavioral economics, complexity science, and computer science. I'm a Research Fellow at Harvard's Belfer Center, where I run Move37, a project developing AI tools for negotiation and conflict management. I also advise investors and technology companies on strategy and decision architecture.</p>
-      <p>I completed my master's at Harvard Kennedy School, where my thesis examined AI inference optimization. My background as a professional athlete informs how I think about performance, decisions, and executing under pressure.</p>
-    </div>
-    <div class="about-details">
-      <div class="detail-group">
-        <span class="detail-group-label">Education</span>
-        <div class="detail-group-items">
-          <span>MA, Oxford University</span>
-          <span>MPP, Harvard Kennedy School</span>
-        </div>
-      </div>
-      <div class="detail-group">
-        <span class="detail-group-label">Research Interests</span>
-        <div class="detail-group-items">
-          <span>Decision Theory: individuals, institutions, and markets</span>
-          <span>Computational Decision Support (RL, MDPs, Game Theory)</span>
-          <span>Forecasting: Geopolitics, Economics, and Politics</span> 
-          <span>Evolutionary Biology/ Cultural Evolution</span>
-          <span>Behavioral Economics and Institutional decision</span>
-        </div>
-      </div>
-      <div class="detail-group">
-        <span class="detail-group-label">Elsewhere</span>
-        <div class="detail-group-items">
-          <span><a href="#">Google Scholar</a></span>
-          <span><a href="#">X / Twitter</a></span>
-          <span><a href="#">LinkedIn</a></span>
-          <span><a href="#">GitHub</a></span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    <ul class="writing reveal">
+      <li><div class="w-row"><div class="w-main">
+        <a class="w-title" href="">Belief-Action Coherence in LLMs</a>
+      </div><div class="w-meta"><span class="w-year">Mar 2026</span><span class="w-venue">MIT Econ/CS PhD Seminar</span></div></div></li>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-left">
-    <span class="footer-name">Charlie Pozniak</span>
-    <span class="footer-copy">© 2026 · Cambridge, Massachusetts</span>
+      <li><div class="w-row"><div class="w-main">
+        <a class="w-title" href="https://www.belfercenter.org/research-analysis/move-37-presentation-global-ai-impact-summit-february-20-2026" target="_blank" rel="noopener noreferrer">AI in Negotiations, Diplomacy, and Conflict Management ↗</a>
+      </div><div class="w-meta"><span class="w-year">Feb 2026</span><span class="w-venue">India AI Impact Summit, New Delhi</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <a class="w-title" href="https://cyber.harvard.edu/projects/student-leaders-ai" target="_blank" rel="noopener noreferrer">Autonomous Agential Compute Marketplaces ↗</a>
+      </div><div class="w-meta"><span class="w-year">May 2025</span><span class="w-venue">Berkman Klein Center, Harvard</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <a class="w-title" href="https://open.spotify.com/show/3OCsZAOy6RLzzf2azUiYGg" target="_blank" rel="noopener noreferrer">Thinking About Thinking — Rumman Chowdhury's podcast ↗</a>
+        <span class="w-desc">Recorded at Harvard's Berkman Klein Center, on what intelligence really is and what AI reveals about the society we've built. Also on <a href="https://podcasts.apple.com/us/podcast/thinking-about-thinking-podcast/id1098982232" target="_blank" rel="noopener noreferrer">Apple Podcasts</a>.</span>
+      </div><div class="w-meta"><span class="w-year">2025</span><span class="w-venue">Podcast · Berkman Klein</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <a class="w-title" href="https://cyber.harvard.edu/story/2024-04/bostons-data-landscapes-visualizing-urban-experience-debut-museum-science-boston" target="_blank" rel="noopener noreferrer">Leveraging AI in Boston's Transportation Networks ↗</a>
+      </div><div class="w-meta"><span class="w-year">2024</span><span class="w-venue">Boston Museum of Science</span></div></div></li>
+
+      <li><div class="w-row"><div class="w-main">
+        <a class="w-title" href="">Wellbeing Effects of Algorithmic Infotainment</a>
+      </div><div class="w-meta"><span class="w-year">2024</span><span class="w-venue">Mind, Brain &amp; Behavior, Harvard</span></div></div></li>
+    </ul>
+  </section>
+
+  <div class="row"><hr class="rule"></div>
+
+  <!-- ———————————————————— BLOG ———————————————————— -->
+  <section id="blog">
+    <div class="row reveal">
+      <div class="main">
+        <h2>Blog</h2>
+        <p>
+          I write occasionally at
+          <em><a href="https://cpozniak.substack.com" target="_blank" rel="noopener noreferrer">Pozits</a></em>,
+          my Substack. This is more half-formed ideas and open questions, exploring whatever I
+          happen to be reading about.
+        </p>
+      </div>
+      <aside class="margin">
+        <div class="note">
+          <span class="note-label">Read</span>
+          <a href="https://pozits.substack.com" target="_blank" rel="noopener noreferrer">pozits.substack.com</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ———————————————————— FOOTER ———————————————————— -->
+  <div class="row">
+    <footer class="main" style="grid-column:1 / -1">
+      <span>Charlie Pozniak · Cambridge, Massachusetts · MMXXVI</span>
+      <span class="f-links">
+        <a href="https://scholar.google.com/citations?user=8FqS8HoAAAAJ&hl=en&oi=ao" target="_blank" rel="noopener noreferrer">Scholar</a>
+        <a href="https://twitter.com/charliepoz" target="_blank" rel="noopener noreferrer">Twitter</a>
+        <a href="https://github.com/charliepoz" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </span>
+    </footer>
   </div>
-  <div class="footer-links">
-    <a href="#>Email</a>
-    <a href="#">Scholar</a>
-    <a href="#">Twitter</a>
-  </div>
-</footer>
+
+</main>
+
+<!-- ———————————————————— HARMONOGRAPH (after Ivan Moscovich) ———————————————————— -->
+<div class="machine" aria-hidden="true" title="A harmonograph figure after Ivan Moscovich">
+  <canvas id="harmo"></canvas>
+</div>
 
 <script>
-  // Scroll reveal
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  /* —— scroll reveal —— */
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) e.target.classList.add('visible');
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal, .row').forEach(el => io.observe(el));
 
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // Theme toggle
-  const toggle = document.getElementById('themeToggle');
-  const html = document.documentElement;
-
-  toggle.addEventListener('click', () => {
-    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
+  /* —— margin-note interaction —— */
+  const refs  = [...document.querySelectorAll('.ref[data-note]')];
+  const notes = [...document.querySelectorAll('.note[data-note]')];
+  const byKey = (key, on) => {
+    refs.filter(r => r.dataset.note === key).forEach(r => r.classList.toggle('active', on));
+    notes.filter(n => n.dataset.note === key).forEach(n => n.classList.toggle('active', on));
+  };
+  [...refs, ...notes].forEach(el => {
+    el.addEventListener('mouseenter', () => byKey(el.dataset.note, true));
+    el.addEventListener('mouseleave', () => byKey(el.dataset.note, false));
+    el.addEventListener('focusin',   () => byKey(el.dataset.note, true));
+    el.addEventListener('focusout',  () => byKey(el.dataset.note, false));
   });
 
-  // System theme change listener (only if no manual override)
-  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
-    if (!localStorage.getItem('theme')) {
-      html.setAttribute('data-theme', e.matches ? 'light' : 'dark');
+  /* ——————————————————————————————————————————————
+     HARMONOGRAPH
+     A damped, two-pendulum Lissajous curve:
+       x(t) = Σ a·sin(f·t + φ)·e^(−d·t)
+       y(t) = Σ a·sin(f·t + φ)·e^(−d·t)
+     One continuous black curve precesses into a dense woven
+     oval; a few fast-decaying ribbons sweep gold→orange→red
+     around it (King-of-Hearts palette). Each curve is drawn
+     progressively to the scroll fraction, so the whole figure
+     builds as you descend and unwinds as you climb back up.
+  —————————————————————————————————————————————— */
+  const cv = document.getElementById('harmo');
+  const ctx = cv.getContext('2d');
+  let DPR = Math.min(2, window.devicePixelRatio || 1);
+  let curves = [];
+
+  function makeCurve(spec) {
+    const { f, p, a, d, tmax, steps, half, cx, cy, rot } = spec;
+    const t0 = spec.t0 || 0;
+    const cr = Math.cos(rot), sr = Math.sin(rot);
+    const pts = new Float32Array((steps + 1) * 2);
+    for (let i = 0; i <= steps; i++) {
+      const t = t0 + (tmax - t0) * i / steps;
+      const x = a[0]*half*Math.sin(f[0]*t + p[0])*Math.exp(-d[0]*t)
+              + a[1]*half*Math.sin(f[1]*t + p[1])*Math.exp(-d[1]*t);
+      const y = a[2]*half*Math.sin(f[2]*t + p[2])*Math.exp(-d[2]*t)
+              + a[3]*half*Math.sin(f[3]*t + p[3])*Math.exp(-d[3]*t);
+      pts[i*2]   = cx + (x*cr - y*sr);
+      pts[i*2+1] = cy + (x*sr + y*cr);
     }
-  });
+    return { color: spec.color, width: spec.width * DPR, alpha: spec.alpha, ease: spec.ease || 1, pts };
+  }
+
+  // The base composition. Random seed (orientation + each line's start phase)
+  // is drawn once per page load, so every refresh yields a novel figure while
+  // resizing keeps the same one.
+  let seed = null;
+
+  function build() {
+    const sizeCSS = cv.clientWidth || 140;
+    const S = Math.round(sizeCSS * DPR);
+    cv.width = S; cv.height = S;
+    const half = S / 2, cx = S * 0.50, cy = S * 0.52;
+
+    const PALETTE = { black:'#16110d', gold:'#f3b40a', orange:'#e0701a', red:'#bd1f24' };
+    const FIT = 0.84;   // keeps the figure inside the canvas at any rotation
+
+    // each line: frequencies, phases, amplitudes, damping, duration, tilt,
+    // centre offset (fraction of radius), colour, weight, opacity.
+    const lines = [
+      // dense black core — the nested-ellipse "eye"
+      { f:[2.0,4.0,2.0,4.0],  p:[0,0.6,Math.PI/2,0.2], a:[0.72,0.06,0.50,0.05], d:0.017, tmax:95,  steps:6000, rot:-0.34, ofx:0,     ofy:0,     color:PALETTE.black,  width:0.8,  alpha:0.74 },
+      // warm bands sweeping past the eye — comparable arc length & speed
+      { f:[2.0,4.0,2.06,4.0], p:[0,0,Math.PI/2,0],     a:[0.92,0.05,0.34,0.04], d:0.006, tmax:150, steps:5600, rot:-0.62, ofx:0.133, ofy:0.113, color:PALETTE.gold,   width:0.75, alpha:0.5 },
+      { f:[2.0,4.0,2.07,4.0], p:[0.4,0,1.0,0],         a:[0.86,0.05,0.30,0.04], d:0.007, tmax:140, steps:5400, rot:-0.5,  ofx:0.153, ofy:0.067, color:PALETTE.orange, width:0.72, alpha:0.5 },
+      { f:[2.0,4.0,2.08,4.0], p:[0.9,0,0.5,0],         a:[0.74,0.05,0.26,0.04], d:0.009, tmax:130, steps:5200, rot:-0.42, ofx:0.10,  ofy:0.0,   color:PALETTE.red,    width:0.72, alpha:0.55 },
+    ];
+
+    if (!seed) {
+      const TAU = Math.PI * 2, rnd = (a, b) => a + Math.random() * (b - a);
+      seed = { theta: rnd(0, TAU), phis: lines.map(() => rnd(0, TAU)) };
+    }
+    const { theta, phis } = seed;
+    const ct = Math.cos(theta), st = Math.sin(theta);
+
+    curves = lines.map((L, i) => {
+      const phi = phis[i];                         // this line's random start position
+      const ox = (L.ofx * ct - L.ofy * st) * FIT;  // rotate the centre offset with the figure
+      const oy = (L.ofx * st + L.ofy * ct) * FIT;
+      return makeCurve({
+        f: L.f, p: L.p.map(v => v + phi),
+        a: L.a.map(v => v * FIT), d: [L.d, L.d, L.d, L.d],
+        tmax: L.tmax, steps: L.steps, half,
+        cx: cx + ox * half, cy: cy + oy * half, rot: L.rot + theta,
+        color: L.color, width: L.width, alpha: L.alpha,
+      });
+    });
+  }
+
+  function draw(p) {
+    const S = cv.width;
+    ctx.clearRect(0, 0, S, S);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (const c of curves) {
+      const total = c.pts.length / 2;
+      // ease < 1 front-loads the draw (fast early) but still completes at p = 1
+      const n = Math.floor(total * Math.pow(p, c.ease));
+      if (n < 2) continue;
+      ctx.beginPath();
+      ctx.moveTo(c.pts[0], c.pts[1]);
+      for (let i = 1; i < n; i++) ctx.lineTo(c.pts[i*2], c.pts[i*2+1]);
+      ctx.strokeStyle = c.color; ctx.globalAlpha = c.alpha; ctx.lineWidth = c.width;
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function progress() {
+    const doc = document.documentElement;
+    const max = (doc.scrollHeight - doc.clientHeight) || 1;
+    return Math.min(1, Math.max(0, window.scrollY / max));
+  }
+
+  let ticking = false;
+  function onScroll() {
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(() => { draw(progress()); ticking = false; });
+  }
+  function onResize() { DPR = Math.min(2, window.devicePixelRatio || 1); build(); draw(progress()); }
+
+  build();
+  draw(progress());
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onResize, { passive: true });
 </script>
 
 </body>
